@@ -5,7 +5,7 @@
 
 ## 진행 상황
 
-- [ ] Phase 0. 프로젝트 셋업
+- [x] Phase 0. 프로젝트 셋업
 - [ ] Phase 1. 엔진: 보드 모델 & 수 생성
 - [ ] Phase 2. 엔진: 게임 상태 & 종료 판정
 - [ ] Phase 3. UI: 보드 렌더링 & 마우스 조작
@@ -13,7 +13,7 @@
 - [ ] Phase 5. 배치 편집 모드
 - [ ] Phase 6. 마무리 (기보, 무르기, 무승부/기권, 다듬기)
 
-**다음 세션은 Phase 0부터 시작한다.**
+**다음 세션은 Phase 1부터 시작한다.**
 
 ---
 
@@ -62,12 +62,14 @@ tests/                 # Vitest. engine 위주
 ---
 
 ## Phase 0. 프로젝트 셋업
-- [ ] `npm create vite@latest . -- --template vanilla-ts` (또는 수동 구성)
-- [ ] Vitest 추가, `npm test` 스크립트
-- [ ] `tsconfig` strict 모드
-- [ ] `.gitignore` (node_modules, dist)
-- [ ] 빈 `src/engine`, `src/ui`, `tests` 디렉터리와 스모크 테스트 1개
-- [ ] `npm run dev`, `npm test`, `npm run build` 모두 동작 확인
+- [x] ~~`npm create vite@latest . -- --template vanilla-ts`~~ 수동 구성 (기존 파일이 있는 디렉터리라서)
+- [x] Vitest 추가, `npm test` 스크립트 (`vitest run`, 감시 모드는 `npm run test:watch`)
+- [x] `tsconfig` strict 모드 (+ `noUncheckedIndexedAccess`, `noUnusedLocals/Parameters`)
+- [x] `.gitignore` (node_modules, dist)
+- [x] 빈 `src/engine`, `src/ui`, `tests` 디렉터리와 스모크 테스트 1개 (`tests/smoke.test.ts`)
+- [x] `npm run dev`, `npm test`, `npm run build` 모두 동작 확인
+
+설치된 버전: TypeScript 7.0, Vite 8.3, Vitest 5.0. 진입점은 `index.html` → `src/ui/main.ts`, 엔진 공개 API 는 `src/engine/index.ts` 에서 re-export 한다.
 
 ## Phase 1. 엔진: 보드 모델 & 수 생성
 - [ ] `types.ts`, `square.ts` — 칸 파싱: `"e4"`, `"E4"`, `"4e"` 모두 같은 칸. 잘못된 입력은 `null`
@@ -142,6 +144,7 @@ tests/                 # Vitest. engine 위주
 ## 결정 기록
 - 2026-10-02: 웹 앱(TypeScript + Vite, 프레임워크 없음)으로 결정. 마우스+키보드+입력창 UI를 만들기 쉽고 설치가 필요 없다.
 - 2026-10-02: `Ctrl+T` 는 브라우저가 가로챌 수 없어서 이동 단축키를 `Ctrl+M` 으로 변경.
+- 2026-10-02: Phase 0 은 `npm create vite` 대신 수동 구성. Vitest 설정은 `vite.config.ts` 의 `test` 필드에 둔다.
 - 2026-10-02: 칸 입력은 `e4` 와 `4e` 둘 다 허용 (요구사항 예시가 `4e` 형식).
 
 ## 미결정 / 다음에 확인할 것
