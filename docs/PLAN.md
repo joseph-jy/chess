@@ -6,14 +6,14 @@
 ## 진행 상황
 
 - [x] Phase 0. 프로젝트 셋업
-- [ ] Phase 1. 엔진: 보드 모델 & 수 생성
+- [x] Phase 1. 엔진: 보드 모델 & 수 생성
 - [ ] Phase 2. 엔진: 게임 상태 & 종료 판정
 - [ ] Phase 3. UI: 보드 렌더링 & 마우스 조작
 - [ ] Phase 4. UI: 키보드 조작 (명령 팔레트)
 - [ ] Phase 5. 배치 편집 모드
 - [ ] Phase 6. 마무리 (기보, 무르기, 무승부/기권, 다듬기)
 
-**다음 세션은 Phase 1부터 시작한다.**
+**다음 세션은 Phase 2부터 시작한다.**
 
 ---
 
@@ -72,25 +72,26 @@ tests/                 # Vitest. engine 위주
 설치된 버전: TypeScript 7.0, Vite 8.3, Vitest 5.0. 진입점은 `index.html` → `src/ui/main.ts`, 엔진 공개 API 는 `src/engine/index.ts` 에서 re-export 한다.
 
 ## Phase 1. 엔진: 보드 모델 & 수 생성
-- [ ] `types.ts`, `square.ts` — 칸 파싱: `"e4"`, `"E4"`, `"4e"` 모두 같은 칸. 잘못된 입력은 `null`
-- [ ] `board.ts`, `position.ts`, `fen.ts` — 시작 FEN 왕복 테스트
-- [ ] `attacks.ts` — 각 기물별 공격 칸
-- [ ] `movegen.ts`
-  - [ ] 폰: 1칸/2칸 전진, 대각 잡기, 앙파상, 프로모션
-  - [ ] 나이트, 킹, 슬라이딩(비숍/룩/퀸)
-  - [ ] 캐슬링: 권한, 사이 칸 비어있음, 킹이 체크 중/통과 칸/도착 칸 공격받지 않음
-  - [ ] 합법성 필터 (핀, 체크 회피)
-- [ ] **perft 테스트** — 아래 표준 포지션으로 수 생성 정확성 검증
+- [x] `types.ts`, `square.ts` — 칸 파싱: `"e4"`, `"E4"`, `"4e"` 모두 같은 칸. 잘못된 입력은 `null`
+- [x] `board.ts`, `position.ts`, `fen.ts` — 시작 FEN 왕복 테스트
+- [x] `attacks.ts` — 각 기물별 공격 칸
+- [x] `movegen.ts`
+  - [x] 폰: 1칸/2칸 전진, 대각 잡기, 앙파상, 프로모션
+  - [x] 나이트, 킹, 슬라이딩(비숍/룩/퀸)
+  - [x] 캐슬링: 권한, 사이 칸 비어있음, 킹이 체크 중/통과 칸/도착 칸 공격받지 않음
+  - [x] 합법성 필터 (핀, 체크 회피)
+- [x] **perft 테스트** — 아래 표준 포지션으로 수 생성 정확성 검증
 
 | 포지션 | FEN | depth 1 | 2 | 3 | 4 |
 |---|---|---|---|---|---|
 | 시작 | `rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1` | 20 | 400 | 8902 | 197281 |
 | Kiwipete | `r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1` | 48 | 2039 | 97862 | 4085603 |
-| Position 3 | `8/2p5/3p4/KP5r/1R3p2/8/4P3/8 w - - 0 1` | 14 | 191 | 2812 | 43238 |
+| Position 3 | `8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1` | 14 | 191 | 2812 | 43238 |
 | Position 4 | `r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1` | 6 | 264 | 9467 | 422333 |
 | Position 5 | `rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8` | 44 | 1486 | 62379 | 2103487 |
 
-(depth 4 가 느리면 기본 테스트는 depth 3 까지, depth 4 는 별도 스크립트로)
+`npm test` 는 depth 3 까지 (~1초). depth 4 는 `npm run perft` (~26초) — 엔진 변경 시 둘 다 돌린다.
+수 적용은 `applyMove(pos, move)` (새 Position 반환), 합법 수는 `legalMoves(pos)` (movegen.ts).
 
 ## Phase 2. 엔진: 게임 상태 & 종료 판정
 - [ ] `game.ts` — move/undo, 히스토리, halfmove/fullmove 갱신, 캐슬링 권한 갱신(킹/룩 이동, 룩 잡힘)
@@ -145,6 +146,7 @@ tests/                 # Vitest. engine 위주
 - 2026-10-02: 웹 앱(TypeScript + Vite, 프레임워크 없음)으로 결정. 마우스+키보드+입력창 UI를 만들기 쉽고 설치가 필요 없다.
 - 2026-10-02: `Ctrl+T` 는 브라우저가 가로챌 수 없어서 이동 단축키를 `Ctrl+M` 으로 변경.
 - 2026-10-02: Phase 0 은 `npm create vite` 대신 수동 구성. Vitest 설정은 `vite.config.ts` 의 `test` 필드에 둔다.
+- 2026-10-02: PLAN 의 Position 3 FEN 이 잘못 적혀 있었음(흑 킹·g2 폰 누락). chessprogramming.org 표준 FEN 으로 수정.
 - 2026-10-02: 칸 입력은 `e4` 와 `4e` 둘 다 허용 (요구사항 예시가 `4e` 형식).
 
 ## 미결정 / 다음에 확인할 것

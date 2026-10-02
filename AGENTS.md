@@ -35,7 +35,8 @@
 ## 명령어
 - `npm install` — 의존성 설치
 - `npm run dev` — 개발 서버
-- `npm test` — 테스트 (Vitest)
+- `npm test` — 테스트 (Vitest, perft 는 depth 3 까지)
+- `npm run perft` — perft depth 4 (~30초, 엔진 변경 시 실행)
 - `npm run build` — 타입 체크 + 프로덕션 빌드
 
 ## 코드 규칙
