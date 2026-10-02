@@ -7,3 +7,5 @@ export { parseSquare, squareName, fileOf, rankOf, makeSquare } from './square';
 export { START_FEN, FenError, parseFen, toFen, pieceToChar } from './fen';
 export { Game, IllegalMoveError } from './game';
 export type { GameStatus, DrawReason, MoveInput } from './game';
+export { editPlace, editMove, availableCastling, validateSetup, PRESETS, presetBoard } from './setup';
+export type { SetupResult } from './setup';

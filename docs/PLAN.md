@@ -131,6 +131,7 @@ tests/                 # Vitest. engine 위주
 - [ ] 킹은 지우개/덮어쓰기로 제거 불가 (킹은 이동만 가능). 킹 추가 버튼도 없음 → 항상 각 1개 보장
 - [ ] 먼저 둘 진영 선택
 - [ ] 캐슬링 권한 자동 계산 (킹 e1/e8, 룩 a/h 코너에 있을 때만) + 사용자가 끌 수 있게 체크박스
+- [x] 편집 규칙(킹 보호, 캐슬링 권한 계산)과 검증은 엔진 `setup.ts` (`editPlace`, `editMove`, `availableCastling`, `validateSetup`, `PRESETS`)
 - [ ] `validateSetup` 실패 시 시작 버튼 비활성 + 이유 표시
   - 킹 개수 ≠ 1, 1·8랭크 폰, 차례가 아닌 쪽 킹이 체크당함
 - [ ] 편집 배치 → FEN → `new Game(fen)` 으로 대국 시작
