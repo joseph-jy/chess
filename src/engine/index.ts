@@ -5,3 +5,5 @@ export type { Position } from './position';
 export { emptyPosition, clonePosition } from './position';
 export { parseSquare, squareName, fileOf, rankOf, makeSquare } from './square';
 export { START_FEN, FenError, parseFen, toFen, pieceToChar } from './fen';
+export { Game, IllegalMoveError } from './game';
+export type { GameStatus, DrawReason, MoveInput } from './game';

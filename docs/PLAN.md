@@ -7,13 +7,13 @@
 
 - [x] Phase 0. 프로젝트 셋업
 - [x] Phase 1. 엔진: 보드 모델 & 수 생성
-- [ ] Phase 2. 엔진: 게임 상태 & 종료 판정
+- [x] Phase 2. 엔진: 게임 상태 & 종료 판정
 - [ ] Phase 3. UI: 보드 렌더링 & 마우스 조작
 - [ ] Phase 4. UI: 키보드 조작 (명령 팔레트)
 - [ ] Phase 5. 배치 편집 모드
 - [ ] Phase 6. 마무리 (기보, 무르기, 무승부/기권, 다듬기)
 
-**다음 세션은 Phase 2부터 시작한다.**
+**다음 세션은 Phase 3부터 시작한다.**
 
 ---
 
@@ -55,7 +55,9 @@ tests/                 # Vitest. engine 위주
   - `new Game(fen?)`, `game.position`, `game.turn`
   - `game.legalMoves()`, `game.legalMovesFrom(sq)`
   - `game.move(move)`, `game.undo()`
-  - `game.status()` → `{ kind: 'playing' | 'checkmate' | 'stalemate' | 'draw' | 'resigned', reason?, winner? }`
+  - `game.status()` → `{ kind: 'playing' } | { kind: 'checkmate', winner } | { kind: 'stalemate' } | { kind: 'draw', reason: 'fifty-move' | 'threefold' | 'insufficient' | 'agreement' } | { kind: 'resigned', winner }`
+  - `game.move({ from, to, promotion? })` — 합법 수가 아니면 `IllegalMoveError`. 게임이 끝나면 `legalMoves()` 는 빈 배열
+  - `game.resign(color)`, `game.agreeDraw()`, `game.canUndo()`, `game.lastMove()`, `game.fen()`
   - `game.inCheck()`, `game.history()` (SAN 목록)
   - `validateSetup(position)` → `{ ok: true } | { ok: false, errors: string[] }`
 
@@ -94,14 +96,14 @@ tests/                 # Vitest. engine 위주
 수 적용은 `applyMove(pos, move)` (새 Position 반환), 합법 수는 `legalMoves(pos)` (movegen.ts).
 
 ## Phase 2. 엔진: 게임 상태 & 종료 판정
-- [ ] `game.ts` — move/undo, 히스토리, halfmove/fullmove 갱신, 캐슬링 권한 갱신(킹/룩 이동, 룩 잡힘)
-- [ ] 체크메이트 / 스테일메이트
-- [ ] 50수 규칙 (halfmove ≥ 100)
-- [ ] 3회 동형 반복 (FEN 의 앞 4필드를 키로 카운트)
-- [ ] 기물 부족: K vs K, K+B vs K, K+N vs K, K+B vs K+B (같은 색 칸 비숍)
-- [ ] 기권, 합의 무승부 (`game.resign(color)`, `game.agreeDraw()`)
-- [ ] `san.ts` — 동일 기물 모호성 해소(`Nbd2`, `R1e1`), `+`/`#` 표기
-- [ ] 각 항목 단위 테스트
+- [x] `game.ts` — move/undo, 히스토리, halfmove/fullmove 갱신, 캐슬링 권한 갱신(킹/룩 이동, 룩 잡힘)
+- [x] 체크메이트 / 스테일메이트
+- [x] 50수 규칙 (halfmove ≥ 100)
+- [x] 3회 동형 반복 (FEN 의 앞 4필드를 키로 카운트. 단 앙파상 칸은 실제로 앙파상이 합법일 때만 포함)
+- [x] 기물 부족: K vs K, K+B vs K, K+N vs K, K+B vs K+B (같은 색 칸 비숍) — 일반화: 폰/룩/퀸 없고 마이너 ≤ 1개이거나 마이너가 모두 같은 색 칸 비숍
+- [x] 기권, 합의 무승부 (`game.resign(color)`, `game.agreeDraw()`)
+- [x] `san.ts` — 동일 기물 모호성 해소(`Nbd2`, `R1e1`), `+`/`#` 표기
+- [x] 각 항목 단위 테스트
 
 ## Phase 3. UI: 보드 렌더링 & 마우스 조작
 - [ ] 8×8 그리드, 좌표 라벨(a–h, 1–8), 기물은 유니코드 문자(♔♕…)로 시작 (나중에 SVG 교체 가능)
@@ -147,6 +149,8 @@ tests/                 # Vitest. engine 위주
 - 2026-10-02: `Ctrl+T` 는 브라우저가 가로챌 수 없어서 이동 단축키를 `Ctrl+M` 으로 변경.
 - 2026-10-02: Phase 0 은 `npm create vite` 대신 수동 구성. Vitest 설정은 `vite.config.ts` 의 `test` 필드에 둔다.
 - 2026-10-02: PLAN 의 Position 3 FEN 이 잘못 적혀 있었음(흑 킹·g2 폰 누락). chessprogramming.org 표준 FEN 으로 수정.
+- 2026-10-02: `game.undo()` 는 "마지막 동작"을 되돌린다 — 기권/합의 무승부로 끝났으면 그 결과만 취소하고, 아니면 마지막 수를 무른다.
+- 2026-10-02: 50수 규칙과 3회 반복은 (FIDE 의 "청구" 방식이 아니라) 조건이 되면 자동 무승부로 처리. 체크메이트가 50수 규칙보다 우선.
 - 2026-10-02: 칸 입력은 `e4` 와 `4e` 둘 다 허용 (요구사항 예시가 `4e` 형식).
 
 ## 미결정 / 다음에 확인할 것
